@@ -33,6 +33,7 @@ version: 2.1
 #             fi
 
 jobs:
+  ########################## BUILD PHASE ##########################
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -68,7 +69,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-
+  ########################## TEST PHASE ##########################
   test-frontend:
     docker:
       # Docker image here
@@ -106,7 +107,7 @@ jobs:
             npm i
             npm run test
       # - slack_notify
-
+  ########################## ANALYZE PHASE ##########################
   scan-frontend:
     docker:
       # Docker image here
@@ -123,8 +124,7 @@ jobs:
           command: |
             cd frontend
             npm i
-            npm audit fix --audit-level=critical --force
-            # npm audit --audit-level=critical
+            npm audit fix --audit-level=critical
 
   scan-backend:
     docker:
@@ -142,10 +142,7 @@ jobs:
           command: |
             cd backend
             npm i
-            npm audit fix --audit-level=critical --force
-            # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again   
-            npm audit fix --force
-            npm audit --audit-level=critical
+            npm audit fix --audit-level=critical
 
 #   deploy-infrastructure:
 #     docker:
