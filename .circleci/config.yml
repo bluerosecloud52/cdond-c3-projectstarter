@@ -1,4 +1,4 @@
-# version: 2.1
+version: 2.1
 
 # commands:
 #   destroy-environment:
@@ -59,7 +59,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Back-end build
+          name: Build back-end 
           command: |
              # Your code here
             cd backend
