@@ -1,0 +1,43 @@
+---
+- name: Update APT packages
+  apt:
+    update_cache: yes
+  become: true
+  
+- name: Upgrade packages
+  apt:
+    upgrade: yes
+  become: true
+  
+- name: Remove unnecessary dependencies
+  apt:
+    autoremove: yes
+  become: true
+
+- name: Install nodejs and npm
+  apt:
+    name:
+      - nodejs
+      - npm
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Install n
+  npm:
+    name: n
+    global: yes
+    production: yes
+  become: true
+  
+- name: Install nodejs 13.8.0
+  become: true
+  shell: n 13.8.0
+
+- name: Install pm2
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
+  become: true
