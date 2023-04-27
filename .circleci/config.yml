@@ -14,7 +14,7 @@ commands:
           when: on_fail
           command: |
             # Your code here
-            echo "Destroy environment: << parameters.Workflow_ID >> "            
+            echo "Destroying environment: << parameters.Workflow_ID >> "            
             aws s3 rm "s3://udapeople-<<parameters.Workflow_ID>>" --recursive
             aws cloudformation delete-stack --stack-name "udapeople-backend-<< parameters.Workflow_ID >>"
             aws cloudformation delete-stack --stack-name "udapeople-frontend-<< parameters.Workflow_ID >>"
@@ -152,7 +152,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
     ########################## INFRASTRUCTURE PHASE ##########################
-   deploy-infrastructure:
+  deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli:latest
