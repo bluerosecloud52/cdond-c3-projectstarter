@@ -249,7 +249,6 @@ jobs:
       - checkout
       - run:
           name: Run migrations
-          no_output_timeout: 30m
           command: |
             # Your code here
             cd backend
