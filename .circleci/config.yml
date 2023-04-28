@@ -261,7 +261,7 @@ jobs:
             # Your code here
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl --insecure https://kvdb.io/8GifJ5EvH4RdX6inkhGjWh/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl --insecure https://kvdb.io/PZXTrZsgZQMEFRGRNYdHHn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
               echo "Inserted to kvdb"
             fi
       # Here's where you will add some code to rollback on failure
