@@ -251,11 +251,13 @@ jobs:
           name: Run migrations
           command: |
             # Your code here
-            sudo npm cache clean -f 
             cd backend
-            npm install
-            sudo npm audit fix
-            npm run migrations > migrations_dump.txt
+            npm i
+            npm audit fix --audit-level=critical --force
+            npm audit fix --audit-level=critical --force
+            npm audit --audit-level=critical
+            # Run and sve the migration output
+            npm run migrations > ~/project/backend/migrations_dump.txt
       - run:
           name: Send migration results to kvdb
           command: |
