@@ -253,10 +253,6 @@ jobs:
             # Your code here
             cd backend
             npm i
-            npm audit fix --audit-level=critical --force
-            npm audit fix --force
-            npm audit --audit-level=critical
-            npm audit fix
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to kvdb
