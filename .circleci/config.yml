@@ -207,7 +207,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint      
       - add_ssh_keys:
-          fingerprints: ["c9:d9:cc:cd:db:0f:d1:92:78:dd:56:ea:0a:aa:0b:fe"] # You can get this ID in the section where you registered the SSH Key
+          fingerprints: ["8a:e6:7d:55:34:7a:ac:b1:58:bc:13:64:47:e4:61:5d"] # You can get this ID in the section where you registered the SSH Key
       # attach workspace
       - attach_workspace:
           at: ~/
@@ -260,7 +260,7 @@ jobs:
             # Your code here
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl --insecure https://kvdb.io/your_kvdb_database/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl --insecure https://kvdb.io/8GifJ5EvH4RdX6inkhGjWh/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
               echo "Inserted to kvdb"
             fi
       # Here's where you will add some code to rollback on failure
