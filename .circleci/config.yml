@@ -22,21 +22,25 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
+      # Add parameter here
       Workflow_ID:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
       - run:
           name: Revert migrations
+          # Add when this will run
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl --insecure https://kvdb.io/MEr949pLDT5Q8pqYpT8H2D/migration_<< parameters.Workflow_ID >>)
+            SUCCESS=$(curl --insecure https://kvdb.io/8GifJ5EvH4RdX6inkhGjWh/migration_<< parameters.Workflow_ID >>)
             echo "Fetch result: $SUCCESS"
+            # Logic for reverting the database state
             if(( $SUCCESS == 1 )); 
             then
               cd ~/project/backend
-              npm install
+              npm i
+            #  Add revert code here. You can find this in the Getting Started section.
               npm run migration:revert
             fi
 
