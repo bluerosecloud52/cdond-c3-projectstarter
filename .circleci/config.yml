@@ -1,23 +1,23 @@
 version: 2.1
 
-commands:
-  destroy-environment:
-    description: Destroy front-end and back-end cloudformation stacks.
-    parameters:
-      # Add parameter here 
-      Workflow_ID:
-        default: ${CIRCLE_WORKFLOW_ID:0:7}
-        type: string
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            # Your code here
-            echo "Destroying environment: << parameters.Workflow_ID >> "            
-            aws s3 rm "s3://udapeople-<<parameters.Workflow_ID>>" --recursive
-            aws cloudformation delete-stack --stack-name "udapeople-backend-<< parameters.Workflow_ID >>"
-            aws cloudformation delete-stack --stack-name "udapeople-frontend-<< parameters.Workflow_ID >>"
+# commands:
+#   destroy-environment:
+#     description: Destroy front-end and back-end cloudformation stacks.
+#     parameters:
+#       # Add parameter here 
+#       Workflow_ID:
+#         default: ${CIRCLE_WORKFLOW_ID:0:7}
+#         type: string
+#     steps:
+#       - run:
+#           name: Destroy environments
+#           when: on_fail
+#           command: |
+#             # Your code here
+#             echo "Destroying environment: << parameters.Workflow_ID >> "            
+#             aws s3 rm "s3://udapeople-<<parameters.Workflow_ID>>" --recursive
+#             aws cloudformation delete-stack --stack-name "udapeople-backend-<< parameters.Workflow_ID >>"
+#             aws cloudformation delete-stack --stack-name "udapeople-frontend-<< parameters.Workflow_ID >>"
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
@@ -39,7 +39,6 @@ commands:
 #             fi
 
 jobs:
-  ########################## BUILD PHASE ##########################
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -75,7 +74,6 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-  ########################## TEST PHASE ##########################
   test-frontend:
     docker:
       # Docker image here
@@ -93,7 +91,6 @@ jobs:
             cd frontend
             npm i
             npm run test
-
   test-backend:
     docker:
       # Docker image here
@@ -111,7 +108,6 @@ jobs:
             cd backend
             npm i
             npm run test
-  ########################## ANALYZE PHASE ##########################
   scan-frontend:
     docker:
       # Docker image here
@@ -151,7 +147,6 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-    ########################## INFRASTRUCTURE PHASE ##########################
 #   deploy-infrastructure:
 #     docker:
 #       # Docker image here that supports AWS CLI
