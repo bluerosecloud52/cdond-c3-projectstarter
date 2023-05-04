@@ -1,23 +1,23 @@
 version: 2.1
 
-# commands:
-#   destroy-environment:
-#     description: Destroy front-end and back-end cloudformation stacks.
-#     parameters:
-#       # Add parameter here 
-#       Workflow_ID:
-#         default: ${CIRCLE_WORKFLOW_ID:0:7}
-#         type: string
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#             # Your code here
-#             echo "Destroying environment: << parameters.Workflow_ID >> "            
-#             aws s3 rm "s3://udapeople-<<parameters.Workflow_ID>>" --recursive
-#             aws cloudformation delete-stack --stack-name "udapeople-backend-<< parameters.Workflow_ID >>"
-#             aws cloudformation delete-stack --stack-name "udapeople-frontend-<< parameters.Workflow_ID >>"
+commands:
+  destroy-environment:
+    description: Destroy front-end and back-end cloudformation stacks.
+    parameters:
+      # Add parameter here 
+      Workflow_ID:
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+        type: string
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            # Your code here
+            echo "Destroying environment: << parameters.Workflow_ID >> "            
+            aws s3 rm "s3://udapeople-<<parameters.Workflow_ID>>" --recursive
+            aws cloudformation delete-stack --stack-name "udapeople-backend-<< parameters.Workflow_ID >>"
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-<< parameters.Workflow_ID >>"
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
@@ -150,91 +150,91 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-  # deploy-infrastructure:
-  #   docker:
-  #     # Docker image here that supports AWS CLI
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Install tar/gzip      
-  #     - run:
-  #         name: Install tar/gzip utility
-  #         command: |
-  #           yum -y install tar
-  #           yum -y install gzip
-  #     - run:
-  #         name: Ensure back-end infrastructure exists
-  #         command: |
-  #           aws cloudformation deploy \
-  #             --template-file .circleci/files/backend.yml \
-  #             --tags project=udapeople-backend \
-  #             --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-  #     - run:
-  #         name: Ensure front-end infrastructure exist
-  #         command: |
-  #           aws cloudformation deploy \
-  #             --template-file .circleci/files/frontend.yml \
-  #             --tags project=udapeople-frontend \
-  #             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-  #     - run:
-  #         name: Add back-end ip to ansible inventory
-  #         command: |
-  #           # Your code here
-  #           BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-  #             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-  #             --output text)
-  #           echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
-  #           cat .circleci/ansible/inventory.txt
-  #     - persist_to_workspace:
-  #         root: ~/
-  #         paths:
-  #           - project/.circleci/ansible/inventory.txt
-  #     # Here's where you will add some code to rollback on failure
-  #     - destroy-environment
-  # configure-infrastructure:
-  #   docker:
-  #     # Docker image here that supports Ansible
-  #     - image: python:3.8-alpine
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Add ssh keys with fingerprint      
-  #     - add_ssh_keys:
-  #         fingerprints: ["a5:e3:b0:81:d8:22:92:57:54:08:cd:b4:c7:35:af:13"] # You can get this ID in the section where you registered the SSH Key
-  #     # attach workspace
-  #     - attach_workspace:
-  #         at: ~/
-  #     # Install dependencies
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           # Your code here
-  #           apk add --update --no-cache tar gzip ansible aws-cli
-  #     # Configure server
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           echo ENVIRONMENT=production >> "backend/.env"
-  #           echo NODE_ENV=production >> "backend/.env"
-  #           echo VERSION=1.0 >> "backend/.env"
-  #           echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> "backend/.env"
-  #           echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "backend/.env"
-  #           echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
-  #           echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
-  #           echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
-  #           echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
-  #           echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-  #           echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
-  #           echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
-  #           cd .circleci/ansible
-  #           cat inventory.txt
-  #           ansible-playbook -i inventory.txt configure-server.yml
-  #     # Here's where you will add some code to rollback on failure
-  #     - destroy-environment
+  deploy-infrastructure:
+    docker:
+      # Docker image here that supports AWS CLI
+      - image: amazon/aws-cli
+    steps:
+      # Checkout code from git
+      - checkout
+      # Install tar/gzip      
+      - run:
+          name: Install tar/gzip utility
+          command: |
+            yum -y install tar
+            yum -y install gzip
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=udapeople-backend \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=udapeople-frontend \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            # Your code here
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.8-alpine
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint      
+      - add_ssh_keys:
+          fingerprints: ["a5:e3:b0:81:d8:22:92:57:54:08:cd:b4:c7:35:af:13"] # You can get this ID in the section where you registered the SSH Key
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      # Install dependencies
+      - run:
+          name: Install dependencies
+          command: |
+            # Your code here
+            apk add --update --no-cache tar gzip ansible aws-cli
+      # Configure server
+      - run:
+          name: Configure server
+          command: |
+            echo ENVIRONMENT=production >> "backend/.env"
+            echo NODE_ENV=production >> "backend/.env"
+            echo VERSION=1.0 >> "backend/.env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> "backend/.env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment
   # run-migrations:
   #   docker:
   #     # Docker image here that supports NodeJS
@@ -399,13 +399,13 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
