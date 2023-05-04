@@ -341,7 +341,7 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            sudo npm install -g npm@latest
+            npm install -g npm@latest
             rm -rf node_modules
             npm i
             npm run build
