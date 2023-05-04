@@ -331,10 +331,15 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: Install Node.js 13.8
+          command: |
+            curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt-get install -y nodejs    
+      - run:
           name: Install dependencies
           command: |
             # your code here
-            apk add --update --no-cache tar gzip curl nodejs npm ansible aws-cli
+            apk add --update --no-cache tar gzip curl npm ansible aws-cli
       - run:
           name: Deploy backend
           command: |
