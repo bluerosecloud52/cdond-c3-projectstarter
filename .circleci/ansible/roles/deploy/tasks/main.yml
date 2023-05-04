@@ -1,7 +1,14 @@
 ---
-- name: "wait 60 seconds for target connection to become reachable/usable."
-  wait_for_connection:
-    timeout: 60
+- name: Update and upgrade packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+- name: Remove unnecessary dependencies
+  become: true
+  apt:
+    autoremove: yes
 - name: Copy backend files
   become: true
   copy:
@@ -15,10 +22,7 @@
     tar -vxf artifact.tar.gz
     rm artifact.tar.gz
 
-- name: Update APT packages
-  become: true
-  apt:
-    update_cache: yes
+
 
 
 - name: Add Node.js 13
@@ -47,7 +51,7 @@
     cd /home/ubuntu
     npm install
 
-- name: Start node
+- name: Start app
   become: true
   environment:
     ENVIRONMENT: production
