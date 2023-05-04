@@ -286,6 +286,9 @@ jobs:
           command: |
             # your code here
             apk add --update --no-cache tar gzip curl nodejs npm aws-cli
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y openssl
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -333,6 +336,9 @@ jobs:
             # your code here
             apk add --update --no-cache tar gzip curl nodejs npm ansible aws-cli
 
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y openssl
       - run:
           name: Deploy backend and run ansible
           command: |
