@@ -4,7 +4,7 @@ commands:
   destroy-environment:
     description: Destroy front-end and back-end cloudformation stacks.
     parameters:
-      # Add parameter here 
+      # Add parameter here
       Workflow_ID:
         default: ${CIRCLE_WORKFLOW_ID:0:7}
         type: string
@@ -157,7 +157,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      # Install tar/gzip      
+      # Install tar/gzip
       - run:
           name: Install tar/gzip utility
           command: |
@@ -202,7 +202,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      # Add ssh keys with fingerprint      
+      # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["a5:e3:b0:81:d8:22:92:57:54:08:cd:b4:c7:35:af:13"] # You can get this ID in the section where you registered the SSH Key
       # attach workspace
@@ -252,7 +252,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - attach_workspace:
-          at: ~/      
+          at: ~/
       - run:
           name: Run migrations
           command: |
@@ -279,7 +279,7 @@ jobs:
       # Checkout code from git
       - checkout
       - attach_workspace:
-          at: ~/      
+          at: ~/
       # Install dependencies
       - run:
           name: Install dependencies
@@ -291,15 +291,15 @@ jobs:
       - run:
           name: Get backend url
           command: |
-           # your code here
-            export BACKEND_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-            cat frontend/.env
+            # your code here
+             export BACKEND_IP=$(aws ec2 describe-instances \
+               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+               --query 'Reservations[*].Instances[*].PublicIpAddress' \
+               --output text)
+             export API_URL="http://${BACKEND_IP}:3030"
+             echo "API_URL = ${API_URL}"
+             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+             cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -309,7 +309,7 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # Here's where you will add some code to rollback on failure             
+      # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
   deploy-backend:
@@ -349,7 +349,7 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      # Here's where you will add some code to rollback on failure 
+      # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
 
