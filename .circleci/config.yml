@@ -9,17 +9,14 @@ commands:
           command: pip install awscli
 
   install_nodejs:
-    description: Install Nodenv and Node.js 13
+    description: Install Node.js 13
     steps:
       - run:
-          name: Install Nodenv and Node.js 13
+          name: Install Node.js 13
           command: |
-             curl -fsSL https://github.com/nodenv/nodenv-installer/raw/master/bin/nodenv-installer | bash
-             export PATH="$HOME/.nodenv/bin:$PATH"
-             eval "$(nodenv init -)"
-             nodenv install 13.8.0
-             nodenv global 13.8.0
-             node -v
+            apt-get update
+            apt-get install -y nodejs npm
+            node -v
 
   install_ansible:
     description: Install Ansible
