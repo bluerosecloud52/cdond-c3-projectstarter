@@ -2,10 +2,13 @@ version: 2.1
 
 commands:
   install_awscli:
-    description: Install AWS cli
+    description: Install AWS CLI
     steps:
       - run:
-          name: Install AWS cli
+          name: Install curl
+          command: sudo apt-get update && sudo apt-get install -y curl
+      - run:
+          name: Install AWS CLI
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
