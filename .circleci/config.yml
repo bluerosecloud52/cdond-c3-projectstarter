@@ -9,17 +9,16 @@ commands:
           command: pip install awscli
 
   install_nodejs:
-    description: Install Node.js 13
+    description: Install Node.js 13.8.0
     steps:
       - run:
-          name: Install Node.js 13
+          name: Install n package
           command: |
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-            nvm install 13.8
-            node -v
+            npm install -g n
+      - run:
+          name: Install Node.js 13.8.0
+          command: |
+            n 13.8.0
 
   install_ansible:
     description: Install Ansible
