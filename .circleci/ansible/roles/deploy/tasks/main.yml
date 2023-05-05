@@ -1,86 +1,44 @@
 ---
-- name: copy backend files
-  become: true
-  copy:
-    src:  ~/project/artifact.tar.gz
-    dest: /home/ubuntu/artifact.tar.gz
-
-- name: extract backend files
-  become: true
-  shell: |
-    cd /home/ubuntu
-    tar -vxf artifact.tar.gz
-    rm artifact.tar.gz
-
-- name: "Update apt packages."
-  become: true
-  apt:
-    update_cache: yes
-
-# - name: "Add Node.js 13"
-#   become: true
-#   shell: |
-#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-
-# - name: "Install node"
-#   become: true
-#   apt:
-#     name: ["nodejs"]
-#     update_cache: yes
-
-- name: Install nodejs & npm
+- name: Install Dependencies
   become: true
   apt:
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
-- name: "Install pm2"
+- name: Install pm2
   become: true
   npm:
     name: pm2
     global: yes
     production: yes
     state: present
-    
-- name: install npm & switch to 13.8.0 
+
+- name: Creates directory
+  file:
+    path: ~/backend
+    state: directory
+    mode: 0755
+
+- name: Extract artifact.tar.gz into ~/backend
+  ansible.builtin.unarchive:
+    src: ~/project/artifact.tar.gz
+    dest: ~/backend
+
+- name: install npm & switch to 13.8.0 to build
   become: true
   shell: |
-    cd /home/ubuntu
+    cd /home/ubuntu/backend
     npm install -g n
     n 13.8.0
-    chown -R ubuntu:ubuntu /home/ubuntu/
-
-- name: "Install dependencies"
-  become: true
+    chown -R ubuntu:ubuntu /home/ubuntu/backend
+- name: build
   shell: |
-    cd /home/ubuntu
+    cd /home/ubuntu/backend
     npm install
-
-- name: "Start node"
-  become: true
-  environment:
-    ENVIRONMENT: production
-    NODE_ENV: production
-    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"  
-    TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES') }}"
-    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-    TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
-    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
+    npm run build
+    
+- name: start pm2
   shell: |
-    cd /home/ubuntu/dist
-    pm2 stop default
-    pm2 start npm -- start
-    # pm2 start -f ./main.js
-    # pm2 start npm --name backend -- start
-    # npm run start
-    pm2 ls
-
-# - name: "Configure pm2 to start as service"
-#   become: true
-#   shell: |
-#     env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
+    cd /home/ubuntu/backend    
+    pm2 start npm --name backend -- start
