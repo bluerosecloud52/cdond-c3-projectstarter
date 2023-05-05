@@ -321,10 +321,8 @@ jobs:
           command: |
             # your code here
             apk add --update --no-cache tar gzip curl aws-cli
-            apk add nodejs=13.8.0-r0
-            node -v
+            apk add nodejs=14.17.6-r0
             apk add npm
-            npm -v
       - run:
           name: Deploy backend
           command: |
