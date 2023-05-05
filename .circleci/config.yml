@@ -5,9 +5,8 @@ commands:
     description: Install AWS CLI
     steps:
       - run:
-          name: Install curl
-          command: |
-            sudo apt-get update && sudo apt-get install -y curl
+          name: Install AWS CLI
+          command: pip install awscli
   install_nodejs:
      description: Install Node.js 13
      steps:
