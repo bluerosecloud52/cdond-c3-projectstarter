@@ -1,6 +1,33 @@
 version: 2.1
 
 commands:
+  install_awscli:
+    description: Install AWS cli
+    steps:
+      - run:
+          name: Install AWS cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+  install_nodejs:
+     description: Install Node.js 13
+     steps:
+      - run:
+          name: Install Node.js 13
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt install -y nodejs
+  install_ansible:
+    description: Install Ansible
+    steps:
+      - run:
+          name: Install Ansible
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y
   destroy-environment:
     description: Destroy front-end and back-end cloudformation stacks.
     parameters:
@@ -206,16 +233,8 @@ jobs:
       - attach_workspace:
           at: ~/
       # Install dependencies
-      - run:
-          name: Install dependencies
-          command: |
-            # Your code here
-            apk add tar
-            apk add gzip
-            apk add openssh-client
-            apk add curl
-            pip install awscli
-            apk add --update ansible
+      - install_ansible    
+      - install_awscli
       # Configure server
       - run:
           name: Configure server
@@ -276,20 +295,9 @@ jobs:
       - attach_workspace:
           at: ~/      
       # Install dependencies
-      - run:
-          name: Install Node
-          command: |
-            curl -sL https://rpm.nodesource.com/setup_13.x | bash -
-            yum -y install nodejs
-            node -v
-      - run:
-          name: Install tar
-          command: |
-            yum -y install tar
-      - run:
-          name: Install gzip
-          command: |
-            yum -y install gzip
+      - install_nodejs
+      - install_awscli
+      - install_ansible
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -327,20 +335,16 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["97:6f:d4:7c:36:f4:3e:6f:b6:3d:75:e4:5f:d4:f7:51"]
+          fingerprints: ["ba:cf:41:ab:3d:0e:13:b7:52:e7:f9:bb:69:ab:43:70"]
       - restore_cache:
           keys: [backend-build]
       # attach workspace
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            python3 -m pip install --user ansible
-            sudo apt update
-            sudo apt install nodejs
-            sudo apt install npm
+      # Install dependencies
+      - install_nodejs
+      - install_awscli
+      - install_ansible
       - run:
           name: Deploy backend
           command: |
