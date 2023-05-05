@@ -14,8 +14,7 @@ commands:
       - run:
           name: Install Node.js 13
           command: |
-            apt-get update
-            apt-get install -y nodejs npm
+            docker run --rm -v $(pwd):/app -w /app node:13.8-alpine sh -c "apk add --no-cache git && npm install"
             node -v
 
   install_ansible:
