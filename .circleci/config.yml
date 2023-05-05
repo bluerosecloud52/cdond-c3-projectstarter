@@ -322,9 +322,9 @@ jobs:
             # your code here
             echo "https://dl-cdn.alpinelinux.org/alpine/v3.14/main" > /etc/apk/repositories
             echo "https://dl-cdn.alpinelinux.org/alpine/v3.14/community" >> /etc/apk/repositories
-            apk add --update --no-cache tar gzip curl aws-cli
             apk update
-            apk del nodejs
+            apk del libffi-3.3-r2
+            apk add libffi=3.4.4-r0
             apk add nodejs=13.8.0-r0
             apk add npm
 
