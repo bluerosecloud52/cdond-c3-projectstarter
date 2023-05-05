@@ -17,17 +17,23 @@
   apt:
     update_cache: yes
 
-- name: "Add Node.js 13"
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+# - name: "Add Node.js 13"
+#   become: true
+#   shell: |
+#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
-- name: "Install node"
+# - name: "Install node"
+#   become: true
+#   apt:
+#     name: ["nodejs"]
+#     update_cache: yes
+
+- name: Install nodejs & npm
   become: true
   apt:
-    name: ["nodejs"]
+    name: ["nodejs", "npm"]
+    state: latest
     update_cache: yes
-
 
 - name: "Install pm2"
   become: true
@@ -36,6 +42,14 @@
     global: yes
     production: yes
     state: present
+    
+- name: install npm & switch to 13.8.0 
+  become: true
+  shell: |
+    cd /home/ubuntu
+    npm install -g n
+    n 13.8.0
+    chown -R ubuntu:ubuntu /home/ubuntu/
 
 - name: "Install dependencies"
   become: true
