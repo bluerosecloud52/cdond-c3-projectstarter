@@ -17,7 +17,7 @@ commands:
               apt-get update
               apt-get install -y sudo
             fi
-            wget -qO- https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
             sudo apt-get install -y nodejs
   install_ansible:
     description: Install Ansible
