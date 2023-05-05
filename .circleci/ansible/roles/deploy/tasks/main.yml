@@ -1,34 +1,35 @@
 ---
-- name: Copy backend files
+- name: copy backend files
   become: true
   copy:
     src:  ~/project/artifact.tar.gz
     dest: /home/ubuntu/artifact.tar.gz
 
-- name: Extract backend files
+- name: extract backend files
   become: true
   shell: |
     cd /home/ubuntu
     tar -vxf artifact.tar.gz
     rm artifact.tar.gz
 
-- name: Update APT packages
+- name: "Update apt packages."
   become: true
   apt:
     update_cache: yes
 
-- name: Add Node.js 13
+- name: "Add Node.js 13"
   become: true
   shell: |
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
-- name: Install Node.js
+- name: "Install node"
   become: true
   apt:
-    name: nodejs
+    name: ["nodejs"]
     update_cache: yes
 
-- name: Install pm2
+
+- name: "Install pm2"
   become: true
   npm:
     name: pm2
@@ -36,13 +37,13 @@
     production: yes
     state: present
 
-- name: Install dependencies
+- name: "Install dependencies"
   become: true
   shell: |
     cd /home/ubuntu
     npm install
 
-- name: Start node
+- name: "Start node"
   become: true
   environment:
     ENVIRONMENT: production
@@ -60,4 +61,12 @@
     cd /home/ubuntu/dist
     pm2 stop default
     pm2 start npm -- start
+    # pm2 start -f ./main.js
+    # pm2 start npm --name backend -- start
+    # npm run start
     pm2 ls
+
+# - name: "Configure pm2 to start as service"
+#   become: true
+#   shell: |
+#     env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
