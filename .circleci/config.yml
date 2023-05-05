@@ -7,8 +7,7 @@ commands:
       - run:
           name: Install curl
           command: |
-            su -
-            apt-get update && apt-get install -y curl
+            sudo apt-get update && sudo apt-get install -y curl
   install_nodejs:
      description: Install Node.js 13
      steps:
