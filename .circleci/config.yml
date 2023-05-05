@@ -270,7 +270,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache tar gzip curl nodejs npm aws-cli
+            apk add --update --no-cache tar gzip curl aws-cli
+            apk add nodejs=13.8.0-r0
+            node -v
+            apk add npm
+            npm -v
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -316,7 +320,11 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            apk add --update --no-cache tar gzip curl nodejs npm ansible aws-cli
+            apk add --update --no-cache tar gzip curl aws-cli
+            apk add nodejs=13.8.0-r0
+            node -v
+            apk add npm
+            npm -v
       - run:
           name: Deploy backend
           command: |
