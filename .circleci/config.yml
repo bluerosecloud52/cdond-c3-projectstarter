@@ -250,8 +250,9 @@ jobs:
           command: |
             # Your code here
             cd backend
-            npm install
+            npm i
             npm run migrations > migrations_dump.txt
+             cat migrations_dump.txt
       - run:
           name: Send migration results to kvdb.io
           command: |
@@ -259,49 +260,107 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl --insecure https://kvdb.io/8GifJ5EvH4RdX6inkhGjWh/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-              echo "Inserted to kvdb"
             fi
      # Here's where you will add some code to rollback on failure 
       - destroy-environment
       # - revert-migrations
 
-#   deploy-frontend:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Get backend url
-#           command: |
-#             # your code here
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "${API_URL}"
-#       - run:
-#           name: Deploy frontend objects
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure      
+  deploy-frontend:
+    docker:
+      # Docker image here that supports AWS CLI
+      - image: python:3.8-alpine
+    steps:
+      # Checkout code from git
+      - checkout
+      # attach workspace
+      - attach_workspace:
+          at: ~/      
+      # Install dependencies
+      - run:
+          name: Install Node
+          command: |
+            curl -sL https://rpm.nodesource.com/setup_13.x | bash -
+            yum -y install nodejs
+            node -v
+      - run:
+          name: Install tar
+          command: |
+            yum -y install tar
+      - run:
+          name: Install gzip
+          command: |
+            yum -y install gzip
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          command: |
+            # your code here
+            cd frontend
+            npm i
+            npm run build
+            npm audit fix --force --audit-level=critical
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      # Here's where you will add some code to rollback on failure
+      # - destroy-environment
+      # - revert-migrations     
                     
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.8-alpine
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["97:6f:d4:7c:36:f4:3e:6f:b6:3d:75:e4:5f:d4:f7:51"]
+      - restore_cache:
+          keys: [backend-build]
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+            python3 -m pip install --user ansible
+            sudo apt update
+            sudo apt install nodejs
+            sudo apt install npm
+      - run:
+          name: Deploy backend
+          command: |
+            # your code here
+            cd backend
+            npm i
+            npm run build
+            ls
+            pwd
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+            sleep 30s
+      # Here's where you will add some code to rollback on failure
+      # - destroy-environment
+      # - revert-migrations
 
 #   smoke-test:
 #     docker:
@@ -383,10 +442,10 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
