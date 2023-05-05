@@ -12,10 +12,6 @@ commands:
     description: Install Node.js 13.8.0
     steps:
       - run:
-          name: Install n package
-          command: |
-            npm install -g n
-      - run:
           name: Install Node.js 13.8.0
           command: |
             n 13.8.0
