@@ -8,13 +8,17 @@ commands:
           name: Install AWS CLI
           command: pip install awscli
   install_nodejs:
-     description: Install Node.js 13
-     steps:
+    description: Install Node.js 13
+    steps:
       - run:
           name: Install Node.js 13
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-            sudo apt install -y nodejs
+            if ! command -v sudo >/dev/null 2>&1; then
+              apt-get update
+              apt-get install -y sudo
+            fi
+            wget -qO- https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt-get install -y nodejs
   install_ansible:
     description: Install Ansible
     steps:
@@ -167,7 +171,6 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
@@ -213,7 +216,6 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environment     
-
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
@@ -251,7 +253,6 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
-
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
@@ -278,7 +279,6 @@ jobs:
      # Here's where you will add some code to rollback on failure 
       - destroy-environment
       # - revert-migrations
-
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
