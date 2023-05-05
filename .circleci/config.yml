@@ -12,11 +12,19 @@ commands:
     description: Install Node.js 13
     steps:
       - run:
+          name: Install nodenv
+          command: |
+            git clone https://github.com/nodenv/nodenv.git ~/.nodenv
+            echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
+            echo 'eval "$(nodenv init -)"' >> ~/.bashrc
+            exec $SHELL
+
+      - run:
           name: Install Node.js 13
           command: |
-            sudo npm install -g n
-            sudo n 13
-            
+            nodenv install 13.8.0
+            nodenv global 13.8.0
+
   install_ansible:
     description: Install Ansible
     steps:
