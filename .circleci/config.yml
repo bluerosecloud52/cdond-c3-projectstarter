@@ -287,6 +287,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list && \
             sudo apt-get update && \
             sudo apt-get install python3-pip -y && \
             sudo pip3 install ansible && \
@@ -295,7 +296,6 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
             unzip awscliv2.zip && \
             sudo ./aws/install && \
-            sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list && \
             sudo apt-get update
       - restore_cache:
           keys: [frontend-build]
@@ -345,6 +345,7 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
+            sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list && \
             sudo apt-get update && \
             sudo apt-get install python3-pip -y && \
             sudo pip3 install ansible && \
@@ -353,9 +354,7 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
             unzip awscliv2.zip && \
             sudo ./aws/install && \
-            sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list && \
             sudo apt-get update
-
       - run:
           name: Deploy backend
           command: |
