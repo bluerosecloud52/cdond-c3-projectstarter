@@ -294,7 +294,9 @@ jobs:
             sudo apt install unzip -y && \
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
             unzip awscliv2.zip && \
-            sudo ./aws/install
+            sudo ./aws/install && \
+            sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list && \
+            sudo apt-get update
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -350,7 +352,9 @@ jobs:
             sudo apt install unzip -y && \
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
             unzip awscliv2.zip && \
-            sudo ./aws/install
+            sudo ./aws/install && \
+            sudo sed -i 's/stretch/buster/g' /etc/apt/sources.list && \
+            sudo apt-get update
 
       - run:
           name: Deploy backend
