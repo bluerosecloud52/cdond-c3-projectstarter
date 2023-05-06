@@ -291,6 +291,8 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Get backend url
           command: |
@@ -310,7 +312,7 @@ jobs:
             cd frontend
             npm install
             npm run build
-            npm audit fix
+
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             pwd
             ls
@@ -328,7 +330,8 @@ jobs:
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["ba:cf:41:ab:3d:0e:13:b7:52:e7:f9:bb:69:ab:43:70"]
-
+      - restore_cache:
+          keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:
@@ -353,7 +356,6 @@ jobs:
             cd ..
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
-
             cd .circleci/ansible
             echo "Contents of the inventory.txt file is -------"
             cat inventory.txt
