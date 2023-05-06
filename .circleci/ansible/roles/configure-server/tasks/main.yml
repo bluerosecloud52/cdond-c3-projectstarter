@@ -8,12 +8,12 @@
   become: true
   apt:
     upgrade: yes
-
-- name: Remove dependencies that are no longer required
+  
+- name: Remove unnecessary dependencies
   become: true
   apt:
     autoremove: yes
-    
+
 - name: Install Node.js and npm
   become: true
   apt:
