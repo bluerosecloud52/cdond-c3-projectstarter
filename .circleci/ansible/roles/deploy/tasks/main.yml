@@ -1,52 +1,50 @@
 ---
-- name: create directory for backend
-  become: yes
-  file:
-      path: ~/backend
-      state: directory
-      mode: 0755
 
-- name: "upgrade packages."
+- name: Upgrade APT packages
   become: true
   apt:
-    upgrade: "yes"
+    upgrade: yes
 
-- name: "install dependencies."
+- name: Install Node.js and npm
   become: true
   apt:
     name: ["nodejs", "npm"]
     update_cache: yes
 
 
-- name: "install pm2"
+- name: Install pm2
   become: true
   npm:
     name: pm2
     global: yes
     production: yes
     state: present
+ 
+- name: Create directory for backend
+  become: true
+  file:
+      path: ~/backend
+      state: directory
+      mode: 0755 
 
-- name: copy backend files
-  become: yes
+- name: Copy backend files
+  become: true
   copy:
     src: ~/project/artifact.tar.gz
     dest: ~/backend/artifact.tar.gz
 
-- name: unzip backend files
-  become: yes
+- name: Extract backend files
+  become: true
   shell: |
     cd ~/backend
     tar -xvf artifact.tar.gz
     rm -f artifact.tar.gz
     
-- name: start backend
-  become: yes
+- name: Start backend
+  become: true
   shell: |
     cd ~/backend
-    # npm install
     pm2 start npm -- run start
-    # cd dist
-    # pm2 start -f main.js
   environment:
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
     TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
