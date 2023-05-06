@@ -289,11 +289,11 @@ jobs:
           command: |
             sudo apt-get update && \
             sudo apt-get install python3-pip -y && \
-            sudo pip3 install ansible
-            sudo apt install curl
-            sudo apt install unzip
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
+            sudo pip3 install ansible && \
+            sudo apt install curl -y && \
+            sudo apt install unzip -y && \
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+            unzip awscliv2.zip && \
             sudo ./aws/install
       - restore_cache:
           keys: [frontend-build]
@@ -345,11 +345,11 @@ jobs:
             # your code here
             sudo apt-get update && \
             sudo apt-get install python3-pip -y && \
-            sudo apt-get install -y ansible
-            sudo apt install curl
-            sudo apt install unzip
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
+            sudo pip3 install ansible && \
+            sudo apt install curl -y && \
+            sudo apt install unzip -y && \
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+            unzip awscliv2.zip && \
             sudo ./aws/install
 
       - run:
