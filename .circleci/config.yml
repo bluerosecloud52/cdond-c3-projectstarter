@@ -483,30 +483,30 @@ jobs:
       # Attach_workspace 
       - attach_workspace:
           at: ~/
-    - run:
-        name: Clean up
-        command: |
-          export OldWorkflowID=$(aws cloudformation list-exports \
-            --query "Exports[?Name==\`WorkflowID\`].Value" \
-            --no-paginate --output text)
-          export STACKS=($(aws cloudformation list-stacks \
-            --query "StackSummaries[*].StackName" \
-            --stack-status-filter CREATE_COMPLETE \
-            --no-paginate --output text))
-          echo OldWorkflowID: "${OldWorkflowID}"
-          echo CIRCLE_WORKFLOW_ID "$CIRCLE_WORKFLOW_ID"
-          echo Stack names: "${STACKS[@]}"
-          if [[ ${STACKS[@]} != "${OldWorkflowID}" ]]
-          then
-            # your code here
-            echo "------------------ "Start cleaning up ---------------"		  
-            aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-            aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-            aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
-            echo "======================= Clean up finished========================"
-          else
-            echo "======================= Unable to clean up========================"            
-          fi
+      - run:
+          name: Clean up
+          command: |
+            export OldWorkflowID=$(aws cloudformation list-exports \
+              --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text)
+            export STACKS=($(aws cloudformation list-stacks \
+              --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE \
+              --no-paginate --output text))
+            echo OldWorkflowID: "${OldWorkflowID}"
+            echo CIRCLE_WORKFLOW_ID "$CIRCLE_WORKFLOW_ID"
+            echo Stack names: "${STACKS[@]}"
+            if [[ ${STACKS[@]} != "${OldWorkflowID}" ]]
+            then
+              # your code here
+              echo "------------------ Start cleaning up ---------------"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+              echo "======================= Clean up finished========================"
+            else
+              echo "======================= Unable to clean up========================"            
+            fi
             
 
 workflows:
