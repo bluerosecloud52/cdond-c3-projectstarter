@@ -199,7 +199,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      # - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -247,7 +247,7 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      # - destroy-environment
 
   run-migrations:
     docker:
@@ -273,7 +273,7 @@ jobs:
               curl --insecure https://kvdb.io/8GifJ5EvH4RdX6inkhGjWh/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
      # Here's where you will add some code to rollback on failure 
-      - destroy-environment      
+      # - destroy-environment      
 
   deploy-frontend:
     docker:
@@ -325,8 +325,8 @@ jobs:
             ls
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
        # Here's where you will add some code to rollback on failure    
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
@@ -373,8 +373,8 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   smoke-test:
     docker:
@@ -429,8 +429,8 @@ jobs:
               exit 1
             fi
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   cloudfront-update:
     docker:
@@ -465,48 +465,48 @@ jobs:
           paths:
             - OldWorkflowID.txt
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
-  cleanup:
-    docker:
-      # Docker image here
-      - image: amazon/aws-cli
-    steps:
-      # Checkout code from git
-      - checkout
-      # Install dependencies 
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip
-      # Attach_workspace 
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Clean up
-          command: |
-            export OldWorkflowID=$(aws cloudformation list-exports \
-              --query "Exports[?Name==\`WorkflowID\`].Value" \
-              --no-paginate --output text)
-            export STACKS=($(aws cloudformation list-stacks \
-              --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE \
-              --no-paginate --output text))
-            echo OldWorkflowID: "${OldWorkflowID}"
-            echo CIRCLE_WORKFLOW_ID "$CIRCLE_WORKFLOW_ID"
-            echo Stack names: "${STACKS[@]}"
-            if [[ ${STACKS[@]} != "${OldWorkflowID}" ]]
-            then
-              # your code here
-              echo "------------------ Start cleaning up ---------------"
-              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
-              echo "======================= Clean up finished========================"
-            else
-              echo "======================= Unable to clean up========================"            
-            fi
+  # cleanup:
+  #   docker:
+  #     # Docker image here
+  #     - image: amazon/aws-cli
+  #   steps:
+  #     # Checkout code from git
+  #     - checkout
+  #     # Install dependencies 
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           yum install -y tar gzip
+  #     # Attach_workspace 
+  #     - attach_workspace:
+  #         at: ~/
+  #     - run:
+  #         name: Clean up
+  #         command: |
+  #           export OldWorkflowID=$(aws cloudformation list-exports \
+  #             --query "Exports[?Name==\`WorkflowID\`].Value" \
+  #             --no-paginate --output text)
+  #           export STACKS=($(aws cloudformation list-stacks \
+  #             --query "StackSummaries[*].StackName" \
+  #             --stack-status-filter CREATE_COMPLETE \
+  #             --no-paginate --output text))
+  #           echo OldWorkflowID: "${OldWorkflowID}"
+  #           echo CIRCLE_WORKFLOW_ID "$CIRCLE_WORKFLOW_ID"
+  #           echo Stack names: "${STACKS[@]}"
+  #           if [[ ${STACKS[@]} != "${OldWorkflowID}" ]]
+  #           then
+  #             # your code here
+  #             echo "------------------ Start cleaning up ---------------"
+  #             aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+  #             aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+  #             aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+  #             echo "======================= Clean up finished========================"
+  #           else
+  #             echo "======================= Unable to clean up========================"            
+  #           fi
             
 
 workflows:
