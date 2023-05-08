@@ -281,6 +281,9 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["3f:1b:45:c9:ad:41:b5:fd:f1:90:86:ab:6b:c5:49:3e"] # You can get this ID in the section where you registered the SSH Key      
       # attach workspace
       - attach_workspace:
           at: ~/      
@@ -319,7 +322,6 @@ jobs:
             cd frontend
             npm i
             npm run build
-            npm audit fix
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             pwd
             ls
